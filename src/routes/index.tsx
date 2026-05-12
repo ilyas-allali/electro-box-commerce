@@ -152,7 +152,7 @@ function HomePage() {
           }}
         />
 
-        <div className="container mx-auto px-4 md:px-6 pt-32 pb-28 md:pt-40 md:pb-36 relative">
+        <div className="container mx-auto px-4 md:px-6 pt-24 pb-20 md:pt-28 md:pb-24 relative">
           {/* Trust badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.07] border border-[var(--cyan-bright)]/30 backdrop-blur-sm">
             <div className="flex -space-x-1">
@@ -198,21 +198,6 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Social proof counters */}
-          <div className="mt-12 grid grid-cols-3 gap-6 max-w-md">
-            {[
-              { value: "5000+", label: lang === "ar" ? "عميل سعيد" : "Clients satisfaits" },
-              { value: "24-72h", label: lang === "ar" ? "توصيل سريع" : "Livraison rapide" },
-              { value: "100%", label: lang === "ar" ? "دفع آمن" : "Paiement sécurisé" },
-            ].map((s) => (
-              <div key={s.label}>
-                <div className="text-2xl md:text-3xl font-extrabold text-[var(--cyan-bright)]">
-                  {s.value}
-                </div>
-                <div className="text-xs text-white/40 mt-0.5">{s.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
       </section>
@@ -224,7 +209,7 @@ function HomePage() {
             {[
               { Icon: Wallet, title: lang === "ar" ? "الدفع عند الاستلام" : "COD", sub: lang === "ar" ? "الدفع عند الاستلام" : "Paiement à la livraison" },
               { Icon: Truck, title: "24-72h", sub: lang === "ar" ? "في جميع المغرب" : "Tout le Maroc" },
-              { Icon: ShieldCheck, title: lang === "ar" ? "جودة" : "Qualité", sub: lang === "ar" ? "ضمان سنة" : "Garantie 1 an" },
+              { Icon: BadgeCheck, title: lang === "ar" ? "جودة" : "Qualité", sub: lang === "ar" ? "منتجات مختارة" : "Produits sélectionnés" },
               { Icon: Package, title: lang === "ar" ? "إرجاع" : "Retour", sub: lang === "ar" ? "خلال 7 أيام" : "Sous 7 jours" },
             ].map(({ Icon, title, sub }) => (
               <div

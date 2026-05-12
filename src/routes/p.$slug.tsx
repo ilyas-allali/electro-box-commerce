@@ -232,7 +232,7 @@ function ProductPage() {
               {[
                 { Icon: ShieldCheck, title: lang === "ar" ? "الدفع" : "Paiement", sub: lang === "ar" ? "عند الاستلام" : "À la livraison" },
                 { Icon: Truck, title: lang === "ar" ? "التوصيل" : "Livraison", sub: "24-72h" },
-                { Icon: BadgeCheck, title: lang === "ar" ? "الضمان" : "Garantie", sub: lang === "ar" ? "سنة واحدة" : "1 an" },
+                { Icon: BadgeCheck, title: lang === "ar" ? "إرجاع" : "Retour", sub: lang === "ar" ? "خلال 7 أيام" : "Sous 7 jours" },
               ].map(({ Icon, title, sub }) => (
                 <div key={title} className="flex flex-col items-center text-center gap-1.5">
                   <div className="h-9 w-9 rounded-full flex items-center justify-center bg-[var(--cyan-bright)]/12 text-[var(--cyan-bright)]">
