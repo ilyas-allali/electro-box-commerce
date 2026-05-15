@@ -1,9 +1,8 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// Cloudflare Workers deployment: enable the Cloudflare plugin so the build
-// targets the Workers runtime and integrates with wrangler.jsonc.
+// Vercel deployment: Disable Cloudflare plugin so Nitro can automatically detect and build for Vercel.
 export default defineConfig({
-  cloudflare: true,
+  cloudflare: false,
   tanstackStart: {
     server: { entry: "server" },
   },
