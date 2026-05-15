@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useT, useLangStore, HtmlLangSync } from "@/lib/i18n";
 import { PixelInjector } from "./PixelInjector";
-import { Zap, Globe, Menu, X, ChevronRight, Facebook, Instagram, Phone, Mail } from "lucide-react";
+import { Globe, Menu, X, ChevronRight, Facebook, Instagram, Phone, Mail, Wallet, Truck, BadgeCheck, RotateCcw } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -92,6 +92,23 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
                 <Menu className="h-5 w-5" />
               )}
             </button>
+          </div>
+          {/* Apple-style services sub-nav */}
+          <div className="hidden md:flex items-center justify-center gap-8 lg:gap-12 h-9 border-t border-white/[0.07]">
+            {[
+              { Icon: Wallet, label: lang === "ar" ? "الدفع عند الاستلام" : "Paiement à la livraison" },
+              { Icon: Truck, label: lang === "ar" ? "توصيل 24-72 ساعة" : "Livraison 24-72h" },
+              { Icon: BadgeCheck, label: lang === "ar" ? "جودة مختارة" : "Qualité sélectionnée" },
+              { Icon: RotateCcw, label: lang === "ar" ? "إرجاع خلال 7 أيام" : "Retour sous 7 jours" },
+            ].map(({ Icon, label }) => (
+              <div
+                key={label}
+                className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white/55 hover:text-white/90 transition-colors duration-200"
+              >
+                <Icon className="h-3.5 w-3.5 text-[var(--cyan-bright)]" />
+                {label}
+              </div>
+            ))}
           </div>
         </div>
 

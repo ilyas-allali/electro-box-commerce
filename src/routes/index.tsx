@@ -1,21 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { StoreLayout } from "@/components/StoreLayout";
 import { useT } from "@/lib/i18n";
 import { trackViewLandingPage } from "@/lib/pixel";
 import {
-  Zap,
   Truck,
   ShieldCheck,
-  Wallet,
   ArrowRight,
   Star,
   ShoppingBag,
   Package,
-  Clock,
-  BadgeCheck,
   LayoutGrid,
   Headphones,
   Watch,
@@ -73,6 +69,30 @@ function HomePage() {
     return () => clearTimeout(id);
   }, []);
 
+  // Apple-style scroll-driven hero: progress 0 → 1 across the first viewport.
+  const heroRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const el = heroRef.current;
+      if (!el) return;
+      const h = el.offsetHeight || window.innerHeight;
+      const p = Math.min(1, Math.max(0, window.scrollY / h));
+      el.style.setProperty("--hero-progress", p.toFixed(3));
+    };
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   // Categories
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -125,8 +145,9 @@ function HomePage() {
     <StoreLayout>
       {/* ═══ HERO ═══ */}
       <section
+        ref={heroRef}
         dir={dir}
-        className="relative overflow-hidden text-white bg-[var(--navy-deep)]"
+        className="relative overflow-hidden text-white bg-[var(--navy-deep)] min-h-[70vh] flex items-center"
       >
         {/* Animated logo background video */}
         <video
@@ -137,12 +158,12 @@ function HomePage() {
           playsInline
           preload="auto"
           poster="/logo.png"
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          className="hero-media absolute inset-0 z-0 w-full h-full object-cover pointer-events-none"
         />
 
         {/* Dark overlay so the text stays readable on top of the video */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 z-0 pointer-events-none"
           style={{
             background:
               "linear-gradient(160deg, rgba(10,25,47,0.78) 0%, rgba(10,25,47,0.55) 50%, rgba(10,25,47,0.85) 100%)",
@@ -151,7 +172,7 @@ function HomePage() {
 
         {/* Subtle grid pattern */}
         <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none"
           style={{
             backgroundImage:
               "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)",
@@ -159,7 +180,7 @@ function HomePage() {
           }}
         />
 
-        <div className="container mx-auto px-4 md:px-6 pt-24 pb-20 md:pt-28 md:pb-24 relative">
+        <div className="hero-content container mx-auto px-4 md:px-6 pt-28 pb-16 md:pt-32 md:pb-20 relative z-10">
           {/* Trust badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.07] border border-[var(--cyan-bright)]/30 backdrop-blur-sm">
             <div className="flex -space-x-1">
@@ -189,7 +210,7 @@ function HomePage() {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <a
               href="#products"
-              className="btn-bolt inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl text-sm font-bold"
+              className="btn-pill inline-flex items-center gap-2.5 px-7 py-3.5 text-sm"
             >
               {t("hero.cta")}
               <ArrowRight className="h-4 w-4" />
@@ -207,31 +228,6 @@ function HomePage() {
 
         </div>
 
-      </section>
-
-      {/* ═══ TRUST STRIP ═══ */}
-      <section dir={dir} className="relative z-10 -mt-10 md:-mt-14">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            {[
-              { Icon: Wallet, title: lang === "ar" ? "الدفع عند الاستلام" : "COD", sub: lang === "ar" ? "الدفع عند الاستلام" : "Paiement à la livraison" },
-              { Icon: Truck, title: "24-72h", sub: lang === "ar" ? "في جميع المغرب" : "Tout le Maroc" },
-              { Icon: BadgeCheck, title: lang === "ar" ? "جودة" : "Qualité", sub: lang === "ar" ? "منتجات مختارة" : "Produits sélectionnés" },
-              { Icon: Package, title: lang === "ar" ? "إرجاع" : "Retour", sub: lang === "ar" ? "خلال 7 أيام" : "Sous 7 jours" },
-            ].map(({ Icon, title, sub }) => (
-              <div
-                key={title}
-                className="bg-white rounded-2xl p-4 md:p-5 border border-border/40 shadow-[0_8px_24px_-12px_rgba(10,25,47,0.18)] flex flex-col items-center text-center gap-2 hover:-translate-y-1 transition-transform duration-300"
-              >
-                <div className="h-11 w-11 rounded-full flex items-center justify-center bg-[var(--cyan-bright)]/12 text-[var(--cyan-bright)]">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="text-sm font-bold text-[var(--navy-deep)]">{title}</div>
-                <div className="text-[11px] md:text-xs text-muted-foreground leading-tight">{sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* ═══ CATEGORIES ═══ */}
@@ -371,7 +367,7 @@ function HomePage() {
           </p>
           <a
             href="#products"
-            className="btn-bolt mt-8 inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-bold"
+            className="btn-pill mt-8 inline-flex items-center gap-2.5 px-8 py-4 text-sm"
           >
             {t("hero.cta")} <ArrowRight className="h-4 w-4" />
           </a>
@@ -403,7 +399,7 @@ function ProductCard({
     <Link
       to="/p/$slug"
       params={{ slug: p.slug }}
-      className="group relative bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-[var(--cyan-bright)]/40 transition-all duration-300 hover:shadow-[0_16px_40px_-16px_rgba(10,25,47,0.25)]"
+      className="product-glow group relative bg-card rounded-2xl overflow-hidden border border-border/60"
     >
       {/* Badges */}
       <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5 items-start">
@@ -474,7 +470,9 @@ function ProductCard({
 
         {/* Quick CTA */}
         <div className="mt-3">
-          <span className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-lg bg-[var(--navy-deep)] text-white group-hover:bg-[var(--cyan-bright)] group-hover:text-[var(--navy-deep)] transition-all duration-300">
+          <span
+            className="w-full flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-full bg-[var(--navy-deep)] text-white transition-all duration-300 group-hover:text-[var(--navy-deep)] group-hover:bg-none group-hover:[background-image:var(--gradient-bolt)] group-hover:shadow-[0_8px_22px_-8px_oklch(0.78_0.16_220/0.55)]"
+          >
             <ShoppingBag className="h-3.5 w-3.5" />
             {t("product.buy")}
           </span>
